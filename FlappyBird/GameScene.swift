@@ -9,7 +9,7 @@
 import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate{
-    let verticalPipeGap = 150.0
+    let verticalPipeGap = 300.0
     
     var bird:SKSpriteNode!
     var skyColor:SKColor!
@@ -45,10 +45,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         moving.addChild(pipes)
         
         // ground
-        let groundTexture = SKTexture(imageNamed: "land")
+        let groundTexture = SKTexture(imageNamed: "RocksTrees")
         groundTexture.filteringMode = .nearest // shorter form for SKTextureFilteringMode.Nearest
-        
-        let moveGroundSprite = SKAction.moveBy(x: -groundTexture.size().width * 2.0, y: 0, duration: TimeInterval(0.02 * groundTexture.size().width * 2.0))
+//        self.scaleMode = .aspectFill
+        let moveGroundSprite = SKAction.moveBy(x: -groundTexture.size().width * 2.0, y: 0, duration: TimeInterval(0.2 * groundTexture.size().width * 2.0))
         let resetGroundSprite = SKAction.moveBy(x: groundTexture.size().width * 2.0, y: 0, duration: 0.0)
         let moveGroundSpritesForever = SKAction.repeatForever(SKAction.sequence([moveGroundSprite,resetGroundSprite]))
         
@@ -62,7 +62,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
         
         // skyline
-        let skyTexture = SKTexture(imageNamed: "sky")
+        let skyTexture = SKTexture(imageNamed: "WildSunset")
         skyTexture.filteringMode = .nearest
         
         let moveSkySprite = SKAction.moveBy(x: -skyTexture.size().width * 2.0, y: 0, duration: TimeInterval(0.1 * skyTexture.size().width * 2.0))
@@ -80,9 +80,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
         
         // create the pipes textures
-        pipeTextureUp = SKTexture(imageNamed: "PipeUp")
+        pipeTextureUp = SKTexture(imageNamed: "DonaldTrump1")
         pipeTextureUp.filteringMode = .nearest
-        pipeTextureDown = SKTexture(imageNamed: "PipeDown")
+        pipeTextureDown = SKTexture(imageNamed: "OpenMouthTrumpTransparent")
         pipeTextureDown.filteringMode = .nearest
         
         // create the pipes movement actions
@@ -99,9 +99,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         self.run(spawnThenDelayForever)
         
         // setup our bird
-        let birdTexture1 = SKTexture(imageNamed: "bird-01")
+        let birdTexture1 = SKTexture(imageNamed: "burger")
         birdTexture1.filteringMode = .nearest
-        let birdTexture2 = SKTexture(imageNamed: "bird-02")
+        let birdTexture2 = SKTexture(imageNamed: "burger")
         birdTexture2.filteringMode = .nearest
         
         let anim = SKAction.animate(with: [birdTexture1, birdTexture2], timePerFrame: 0.2)
@@ -113,9 +113,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         bird.run(flap)
         
         
-        bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2.0)
+        bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2.3)
         bird.physicsBody?.isDynamic = true
-        bird.physicsBody?.allowsRotation = false
+        bird.physicsBody?.allowsRotation = true
         
         bird.physicsBody?.categoryBitMask = birdCategory
         bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
@@ -208,7 +208,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         if moving.speed > 0  {
             for _ in touches { // do we need all touches?
                 bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-                bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
+                bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 20))
             }
         } else if canRestart {
             self.resetScene()
@@ -247,6 +247,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                         }), SKAction.wait(forDuration: TimeInterval(0.05))]), count:4), SKAction.run({
                             self.canRestart = true
                             })]), withKey: "flash")
+              
+              let gameOverScene = GameOverScene(size: self.size)
+              view?.presentScene(gameOverScene, transition: SKTransition.flipHorizontal(withDuration: 0.8))
             }
         }
     }
